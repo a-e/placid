@@ -1,0 +1,7 @@
+Gemfile.lock
+.yardoc/*
+.rvmrc
+pkg/*
+coverage/*
+doc/*
+*~

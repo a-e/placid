@@ -1,0 +1,179 @@
+require 'hashie'
+require 'placid/helper'
+
+# Use an external REST API to manipulate model instances.
+#
+# If you define a subclass with the name of your REST model:
+#
+#     class Person < Placid::Model
+#     end
+#
+# You'll have these class methods, and their REST equivalents:
+#
+#     Person.list              # GET     /people
+#     Person.create(attrs)     # POST    /person      (attrs)
+#     Person.get(id)           # GET     /person/:id
+#     Person.delete(id)        # DELETE  /person/:id
+#     Person.update(id, attrs) # PUT     /person/:id  (attrs)
+#
+# Each model has a field that is used for uniquely identifying instances. This
+# would be called the "primary key" in a relational database. If you don't
+# specify the name of the field, `id` is assumed. If your model uses a
+# different field name, you can specify it like this:
+#
+#     class Person < Placid::Model
+#       unique_id :email
+#     end
+#
+module Placid
+  class Model < Hashie::Mash
+
+    include Placid::Helper
+    extend Placid::Helper
+
+    # ------------------
+    # Instance methods
+    # ------------------
+
+    def errors=(new_errors)
+      @errors = new_errors
+    end
+
+    def errors
+      @errors ||= {}
+    end
+
+    # Return true if there are any errors with this model.
+    #
+    def errors?
+      !errors.empty?
+    end
+
+    # Return true if the given field is required.
+    #
+    def required?(field)
+      meta = self.class.meta
+      return meta[field] && meta[field][:required] == true
+    end
+
+    # Save this instance. This creates a new instance, or updates an existing
+    # one, with the attributes in this instance. Return true if creation or
+    # update were successful, false if there were any errors.
+    #
+    # @return [Boolean]
+    #   true if save was successful, false if there were any errors
+    #
+    def save
+      existing = self.class.find(self.id)
+      if existing.nil?
+        json = self.class.create(self.to_hash)
+      else
+        json = self.class.update(self.id, self.to_hash)
+      end
+      self.errors = json['errors']
+      if self.errors.empty?
+        return true
+      else
+        return false
+      end
+    end
+
+    # Return the value in the unique_id field.
+    #
+    def id
+      self[self.class.unique_id]
+    end
+
+
+    # ------------------
+    # Class methods
+    # ------------------
+
+    @unique_id = nil
+
+    # Return the `snake_case` name of this model, based on the derived class
+    # name. This name should match the REST API path component used to interact
+    # with the corresponding model.
+    #
+    def self.model
+      self.name.gsub(/(.)([A-Z])/, '\1_\2').downcase
+    end
+
+    # Get or set the field name used for uniquely identifying instances of this
+    # model.
+    def self.unique_id(field=nil)
+      if field.nil?
+        return @unique_id || :id
+      else
+        @unique_id = field
+      end
+    end
+
+    # Return a Hashie::Mash of meta-data for this model.
+    #
+    # FIXME: Avoid calling this more often than needed
+    def self.meta
+      get_mash(model, 'meta')
+    end
+
+    # Return a Hashie::Mash with a list of all model instances.
+    #
+    def self.list
+      get_mash(model.pluralize)
+    end
+
+    # Return a Model instance matching the given id
+    #
+    # @param [String] id
+    #   Identifier for the model instance to fetch
+    #
+    # @return [Model]
+    #
+    def self.find(id)
+      json = get(model, id)
+      return self.new(json)
+    end
+
+    # Create a new model instance and return it. If there were any errors
+    # during creation, set the `errors` attribute.
+    #
+    # @param [Hash] attrs
+    #   Attribute values for the new instance
+    #
+    # @return [Model]
+    #
+    def self.create(attrs={})
+      obj = self.new(attrs)
+      json = post(model, attrs)
+      obj.errors = json['errors']
+      return obj
+    end
+
+    # Update an existing model instance.
+    #
+    # @param [String] id
+    #   Identifier of the model instance to update
+    # @param [Hash] attrs
+    #   New attribute values to set
+    #
+    # @return [Model]
+    #
+    def self.update(id, attrs={})
+      obj = self.new(attrs)
+      json = put(model, id, attrs)
+      obj.errors = json['errors']
+      return obj
+    end
+
+    # Destroy a model instance.
+    #
+    # @param [String] id
+    #   Identifier for the model instance to delete
+    #
+    def self.destroy(id)
+      delete(model, id)
+    end
+
+  end
+end
+
