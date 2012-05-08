@@ -27,9 +27,9 @@ module Placid
       args.last.is_a?(::Hash) ? args.pop : {}
     end
 
-    # Return a full URL for a REST API request to the given path,
-    # including the configured `rest_url` for the application.
-    # Each path component is URI-escaped.
+    # Return a full URL for a REST API request to the given path, relative to
+    # the configured `Placid::Config.rest_url`. Each path component is
+    # URI-escaped.
     #
     # @example
     #   url('people', 'eric') #=> 'http://localhost/people/eric'
@@ -67,6 +67,7 @@ module Placid
       method = method.to_sym
       params = extract_options(path)
       params = {:params => params} if method == :get
+      base_url = Placid::Config.rest_url
       begin
         response = RestClient.send(method, url(*path), params)
       rescue URI::InvalidURIError => e
