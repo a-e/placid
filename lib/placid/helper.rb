@@ -14,7 +14,14 @@ module Placid
       URI.escape(text.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
     end
 
-    # Mimic ActiveSupport's `String#extract_options!` method.
+    # If the last arg in `args` is a hash, pop it off and return it. Otherwise,
+    # return an empty hash. `args` is modified in-place. Behaves like
+    # ActiveSupport's `String#extract_options!` method.
+    #
+    # @param [Array] args
+    #   Zero or more arguments, the last of which might be a Hash.
+    #
+    # @return [Hash]
     #
     def extract_options(args)
       args.last.is_a?(::Hash) ? args.pop : {}
@@ -25,8 +32,8 @@ module Placid
     # Each path component is URI-escaped.
     #
     # @example
-    #   RestHelper.url('people', 'eric') #=> 'http://localhost:9292/api/people/eric'
-    #   RestHelper.url('a b', 'c:d')     #=> 'http://localhost:9292/api/a%20b/c%3Ad'
+    #   url('people', 'eric') #=> 'http://localhost/people/eric'
+    #   url('a b', 'c:d')     #=> 'http://localhost/a%20b/c%3Ad'
     #
     # @param [Array] path
     #   Parts of the path to request. These will be escaped and joined with '/'.
@@ -42,8 +49,8 @@ module Placid
     # Send a request and return the parsed JSON response.
     #
     # @example
-    #   RestHelper.request('get', 'people', 'eric')
-    #   RestHelper.request(:put, 'people', 'eric', {:title => "Developer"})
+    #   request('get', 'people', 'eric')
+    #   request(:put, 'people', 'eric', {:title => "Developer"})
     #
     # @overload request(method, *path, params={})
     #   @param [String, Symbol] method
@@ -81,11 +88,11 @@ module Placid
     # Send a GET request and return the parsed JSON response.
     #
     # @example
-    #   RestHelper.get('people', 'eric')
-    #   RestHelper.get('people', {:name => 'eric'})
+    #   get('people', 'eric')
+    #   get('people', {:name => 'eric'})
     #
     # @overload get(*path, params={})
-    #   See {RestHelper.request} for allowed parameters.
+    #   See {#request} for allowed parameters.
     #
     # @return [Hash]
     #   Parsed response, or an empty hash if parsing failed
@@ -97,10 +104,10 @@ module Placid
     # Send a POST request and return the parsed JSON response.
     #
     # @example
-    #   RestHelper.post('people', 'new', {:name => 'eric'})
+    #   post('people', 'new', {:name => 'eric'})
     #
     # @overload post(*path, params={})
-    #   See {RestHelper.request} for allowed parameters.
+    #   See {#request} for allowed parameters.
     #
     # @return [Hash]
     #   Parsed response, or an empty hash if parsing failed
@@ -112,10 +119,10 @@ module Placid
     # Send a PUT request and return the parsed JSON response.
     #
     # @example
-    #   RestHelper.put('people', 'eric', {:title => 'Developer'})
+    #   put('people', 'eric', {:title => 'Developer'})
     #
     # @overload put(*path, params={})
-    #   See {RestHelper.request} for allowed parameters.
+    #   See {#request} for allowed parameters.
     #
     # @return [Hash]
     #   Parsed response, or an empty hash if parsing failed
@@ -127,11 +134,11 @@ module Placid
     # Send a DELETE request and return the parsed JSON response.
     #
     # @example
-    #   RestHelper.delete('people', 'eric')
-    #   RestHelper.delete('people', {:name => 'eric'})
+    #   delete('people', 'eric')
+    #   delete('people', {:name => 'eric'})
     #
     # @overload delete(*path, params={})
-    #   See {RestHelper.request} for allowed parameters.
+    #   See {#request} for allowed parameters.
     #
     # @return [Hash]
     #   Parsed response, or an empty hash if parsing failed
@@ -143,7 +150,7 @@ module Placid
     # Send a GET to a path that returns JSON, and return the result as a Hashie::Mash.
     #
     # @overload get_mash(*path, params={})
-    #   See {RestHelper.request} for allowed parameters.
+    #   See {#request} for allowed parameters.
     #
     # @return [Hashie::Mash]
     #
