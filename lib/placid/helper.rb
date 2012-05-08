@@ -34,7 +34,7 @@ module Placid
     # @return [String]
     #
     def url(*path)
-      url = Placid::Config.rest_url.gsub(/\/$/, '')
+      url = Placid::Config.rest_url.to_s.gsub(/\/$/, '')
       joined_path = path.map { |p| escape(p) }.join('/')
       return "#{url}/#{joined_path}"
     end
