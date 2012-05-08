@@ -22,8 +22,8 @@ and you'll get these class methods, and their REST equivalents:
 
     Person.list              # GET     /people
     Person.create(attrs)     # POST    /person      (attrs)
-    Person.get(id)           # GET     /person/:id
-    Person.delete(id)        # DELETE  /person/:id
+    Person.find(id)          # GET     /person/:id
+    Person.destroy(id)       # DELETE  /person/:id
     Person.update(id, attrs) # PUT     /person/:id  (attrs)
 
 By default, placid assumes that your REST API is running on `localhost`. To
