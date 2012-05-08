@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Placid::Helper do
   before(:each) do
-    #CMA.rest_url = 'fake'
+    Placid::Config.rest_url = 'fake'
   end
 
   describe "#escape" do

@@ -26,6 +26,11 @@ and you'll get these class methods, and their REST equivalents:
     Person.delete(id)        # DELETE  /person/:id
     Person.update(id, attrs) # PUT     /person/:id  (attrs)
 
+By default, placid assumes that your REST API is running on `localhost`. To
+change this, set:
+
+    Placid::Config.rest_url = 'http://my.rest.host:8080'
+
 Each model has a field that is used for uniquely identifying instances. This
 would be called the "primary key" in a relational database. If you don't
 specify the name of the field, `id` is assumed. If your model uses a

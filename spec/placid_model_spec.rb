@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Placid::Model do
   before(:each) do
-    #CMA.rest_url = 'fake'
+    Placid::Config.rest_url = 'fake'
   end
 
   class Thing < Placid::Model
