@@ -1,31 +1,9 @@
 require 'hashie'
 require 'placid/helper'
+require 'active_support/inflector' # for `pluralize`
 
-# Use an external REST API to manipulate model instances.
-#
-# If you define a subclass with the name of your REST model:
-#
-#     class Person < Placid::Model
-#     end
-#
-# You'll have these class methods, and their REST equivalents:
-#
-#     Person.list              # GET     /people
-#     Person.create(attrs)     # POST    /person      (attrs)
-#     Person.get(id)           # GET     /person/:id
-#     Person.delete(id)        # DELETE  /person/:id
-#     Person.update(id, attrs) # PUT     /person/:id  (attrs)
-#
-# Each model has a field that is used for uniquely identifying instances. This
-# would be called the "primary key" in a relational database. If you don't
-# specify the name of the field, `id` is assumed. If your model uses a
-# different field name, you can specify it like this:
-#
-#     class Person < Placid::Model
-#       unique_id :email
-#     end
-#
 module Placid
+  # Base class for RESTful models
   class Model < Hashie::Mash
 
     include Placid::Helper

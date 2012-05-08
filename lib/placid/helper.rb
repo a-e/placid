@@ -69,7 +69,7 @@ module Placid
       rescue Errno::ECONNREFUSED
         # TODO
         raise
-      rescue RestClient::ResourceNotFound => e
+      rescue RestClient::Exception => e
         response = e.response
       rescue => e
         # FIXME: Diaper pattern. e.response may not be available with certain

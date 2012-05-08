@@ -29,10 +29,10 @@ describe Placid::Helper do
     end
 
     it "returns the exception response as JSON" do
-      class BadRequest < RuntimeError
+      class BadRequest < RestClient::Exception
         def response; '["fail"]'; end
       end
-      RestClient.stub(:get) { raise BadRequest }
+      RestClient.stub(:get).and_raise(BadRequest)
       json = request('get')
       json.should == ["fail"]
     end
