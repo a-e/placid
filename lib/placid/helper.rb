@@ -2,6 +2,7 @@ require 'uri'
 require 'json'
 require 'hashie'
 require 'rest-client'
+require 'placid/exceptions'
 
 module Placid
   module Helper
@@ -70,17 +71,9 @@ module Placid
       base_url = Placid::Config.rest_url
       begin
         response = RestClient.send(method, url(*path), params)
-      rescue URI::InvalidURIError => e
-        # TODO
-        raise
-      rescue Errno::ECONNREFUSED
-        # TODO
-        raise
       rescue RestClient::Exception => e
         response = e.response
       rescue => e
-        # FIXME: Diaper pattern. e.response may not be available with certain
-        # exceptions, or may not make any sense (like when server is down)
         raise
       end
       return JSON.parse(response) rescue {}
@@ -148,7 +141,8 @@ module Placid
       request('delete', *path)
     end
 
-    # Send a GET to a path that returns JSON, and return the result as a Hashie::Mash.
+    # Send a GET to a path that returns a single JSON object, and return the
+    # result as a Hashie::Mash.
     #
     # @overload get_mash(*path, params={})
     #   See {#request} for allowed parameters.
@@ -157,15 +151,29 @@ module Placid
     #
     def get_mash(*path)
       json = get(*path)
-      # Hash-like?
-      if json.respond_to?(:each_pair)
+      begin
         return Hashie::Mash.new(json)
-      # Array-like?
-      elsif json.respond_to?(:map)
+      rescue => e
+        raise Placid::JSONParseError,
+          "Cannot parse JSON as key-value pairs: #{e.message}"
+      end
+    end
+
+    # Send a GET to a path that returns a JSON array of objects, and return the
+    # result as an array of Hashie::Mash objects.
+    #
+    # @overload get_mashes(*path, params={})
+    #   See {#request} for allowed parameters.
+    #
+    # @return [Array]
+    #
+    def get_mashes(*path)
+      json = get(*path)
+      begin
         return json.map {|rec| Hashie::Mash.new(rec)}
-      # Unknown
-      else
-        return nil # FIXME
+      rescue => e
+        raise Placid::JSONParseError,
+          "Cannot parse JSON as an array of key-value pairs: #{e.message}"
       end
     end
 

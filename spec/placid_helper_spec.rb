@@ -19,18 +19,25 @@ describe Placid::Helper do
 
   describe "#request" do
     it "returns a legitimate response as JSON" do
-      RestClient.stub(:get) { '["success"]' }
+      RestClient.stub(:get => '["success"]')
       json = request('get')
       json.should == ["success"]
     end
 
-    it "returns the exception response as JSON" do
-      class BadRequest < RestClient::Exception
+    it "returns a RestClient::Exception response as JSON" do
+      class RestException < RestClient::Exception
         def response; '["fail"]'; end
       end
-      RestClient.stub(:get).and_raise(BadRequest)
+      RestClient.stub(:get).and_raise(RestException)
       json = request('get')
       json.should == ["fail"]
+    end
+
+    it "passes other exceptions through" do
+      RestClient.stub(:get).and_raise(URI::InvalidURIError)
+      lambda do
+        json = request('get')
+      end.should raise_error(URI::InvalidURIError)
     end
 
     it "returns an empty hash if there is no response" do
@@ -52,6 +59,50 @@ describe Placid::Helper do
     it "sends :params => params for get requests" do
       RestClient.should_receive(:get).with('http://localhost/foo', {:params => {:x => 'y'}})
       json = request('get', 'foo', :x => 'y')
+    end
+  end
+
+  describe "#get_mash" do
+    it "returns a Hashie::Mash for hash data" do
+      data = {
+        'first_name' => 'Nathan',
+        'last_name' => 'Stark',
+      }
+      RestClient.stub(:get => JSON(data))
+      mash = get_mash
+      mash.first_name.should == 'Nathan'
+      mash.last_name.should == 'Stark'
+    end
+
+    it "raises an exception when the JSON cannot be parsed" do
+      data = ['a', 'b', 'c']
+      RestClient.stub(:get => JSON(data))
+      lambda do
+        mashes = get_mash
+      end.should raise_error(Placid::JSONParseError)
+    end
+  end
+
+  describe "#get_mashes" do
+    it "returns a list of Hashie::Mash for list data" do
+      data = [
+        {'first_name' => 'Jack', 'last_name' => 'Carter'},
+        {'first_name' => 'Allison', 'last_name' => 'Blake'},
+      ]
+      RestClient.stub(:get => JSON(data))
+      mashes = get_mashes
+      mashes.first.first_name.should == 'Jack'
+      mashes.first.last_name.should == 'Carter'
+      mashes.last.first_name.should == 'Allison'
+      mashes.last.last_name.should == 'Blake'
+    end
+
+    it "raises an exception when the JSON cannot be parsed" do
+      data = ['a', 'b', 'c']
+      RestClient.stub(:get => JSON(data))
+      lambda do
+        mashes = get_mashes
+      end.should raise_error(Placid::JSONParseError)
     end
   end
 end

@@ -24,7 +24,7 @@ module Placid
     # Return true if there are any errors with this model.
     #
     def errors?
-      !errors.empty?
+      errors && !errors.empty?
     end
 
     # Return true if the given field is required.
@@ -44,16 +44,12 @@ module Placid
     def save
       existing = self.class.find(self.id)
       if existing.nil?
-        json = self.class.create(self.to_hash)
+        obj = self.class.create(self.to_hash)
       else
-        json = self.class.update(self.id, self.to_hash)
+        obj = self.class.update(self.id, self.to_hash)
       end
-      self.errors = json['errors']
-      if self.errors.empty?
-        return true
-      else
-        return false
-      end
+      self.errors = obj.errors
+      return !errors?
     end
 
     # Return the value in the unique_id field.
@@ -97,7 +93,7 @@ module Placid
     # Return a Hashie::Mash with a list of all model instances.
     #
     def self.list
-      get_mash(model.pluralize)
+      get_mashes(model.pluralize)
     end
 
     # Return a Model instance matching the given id

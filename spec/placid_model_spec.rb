@@ -30,7 +30,7 @@ describe Placid::Model do
         Thing.stub(:find => nil)
         Thing.should_receive(:create).
           with({'id' => '123'}).
-          and_return({})
+          and_return(Thing.new)
         thing.save
       end
 
@@ -39,8 +39,29 @@ describe Placid::Model do
         Thing.stub(:find => {:id => '123'})
         Thing.should_receive(:update).
           with('123', {'id' => '123'}).
-          and_return({})
+          and_return(Thing.new)
         thing.save
+      end
+
+      it "returns false if errors were reported" do
+        thing = Thing.new
+        Thing.stub(:find => nil)
+        Thing.stub(:post => {'errors' => 'Missing id'})
+        thing.save.should be_false
+      end
+
+      it "returns true if errors is an empty list" do
+        thing = Thing.new(:id => '123')
+        Thing.stub(:find => nil)
+        Thing.stub(:post => {'errors' => []})
+        thing.save.should be_true
+      end
+
+      it "returns true if no errors were reported" do
+        thing = Thing.new(:id => '123')
+        Thing.stub(:find => nil)
+        Thing.stub(:post => {})
+        thing.save.should be_true
       end
     end
 
@@ -62,8 +83,6 @@ describe Placid::Model do
         thing = Thing.new
         thing.required?(:id).should == false
       end
-
-      it "raises an error if there is no such field"
     end
   end
 
