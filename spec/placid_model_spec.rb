@@ -112,7 +112,7 @@ describe Placid::Model do
       end
     end
 
-    describe "#get" do
+    describe "#find" do
       it "returns a Model instance matching the given id" do
         data = {'name' => 'Foo'}
         RestClient.stub(:get => JSON(data))
@@ -148,7 +148,7 @@ describe Placid::Model do
       end
     end
 
-    describe "#delete" do
+    describe "#destroy" do
       it "returns the parsed JSON response" do
         data = {'status' => 'ok'}
         RestClient.stub(:delete => JSON(data))
