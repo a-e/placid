@@ -43,6 +43,28 @@ describe Placid::Model do
         thing.save
       end
 
+      it "merges saved attributes on create" do
+        thing = Thing.new(:id => '123')
+        saved_attribs = {'id' => '123', 'name' => 'foo'}
+        Thing.stub(:find => nil)
+        Thing.should_receive(:create).
+          with({'id' => '123'}).
+          and_return(Thing.new(saved_attribs))
+        thing.save
+        thing.should == saved_attribs
+      end
+
+      it "merges saved attributes on update" do
+        thing = Thing.new(:id => '123')
+        saved_attribs = {'id' => '123', 'name' => 'foo'}
+        Thing.stub(:find => {:id => '123'})
+        Thing.should_receive(:update).
+          with('123', {'id' => '123'}).
+          and_return(Thing.new(saved_attribs))
+        thing.save
+        thing.should == saved_attribs
+      end
+
       it "returns false if errors were reported" do
         thing = Thing.new
         Thing.stub(:find => nil)

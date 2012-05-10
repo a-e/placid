@@ -48,7 +48,7 @@ module Placid
       else
         obj = self.class.update(self.id, self.to_hash)
       end
-      self.errors = obj.errors
+      self.merge!(obj)
       return !errors?
     end
 
