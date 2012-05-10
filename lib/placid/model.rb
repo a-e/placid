@@ -13,13 +13,13 @@ module Placid
     # Instance methods
     # ------------------
 
-    def errors=(new_errors)
-      @errors = new_errors
-    end
+    #def errors=(new_errors)
+      #@errors = new_errors
+    #end
 
-    def errors
-      @errors ||= {}
-    end
+    #def errors
+      #@errors ||= {}
+    #end
 
     # Return true if there are any errors with this model.
     #
@@ -108,8 +108,7 @@ module Placid
       return self.new(json)
     end
 
-    # Create a new model instance and return it. If there were any errors
-    # during creation, set the `errors` attribute.
+    # Create a new model instance and return it.
     #
     # @param [Hash] attrs
     #   Attribute values for the new instance
@@ -119,7 +118,7 @@ module Placid
     def self.create(attrs={})
       obj = self.new(attrs)
       json = post(model, attrs)
-      obj.errors = json['errors']
+      obj.merge!(json)
       return obj
     end
 
@@ -135,7 +134,8 @@ module Placid
     def self.update(id, attrs={})
       obj = self.new(attrs)
       json = put(model, id, attrs)
-      obj.errors = json['errors']
+      obj.merge!(json)
+      #obj.errors = json['errors']
       return obj
     end
 

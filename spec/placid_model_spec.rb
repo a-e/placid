@@ -140,10 +140,24 @@ describe Placid::Model do
     end
 
     describe "#create" do
-      it "returns a Model instance" do
-        RestClient.stub(:post => '{}')
-        attrs = {'name' => 'Foo'}
-        Thing.create(attrs).should == attrs
+      context "attributes include" do
+        it "posted attributes if no attributes were returned" do
+          RestClient.stub(:post => '{}')
+          attrs = {'name' => 'Foo'}
+          Thing.create(attrs).should == {'name' => 'Foo'}
+        end
+
+        it "returned attributes if no attributes were posted" do
+          RestClient.stub(:post => '{"uri": "foo"}')
+          attrs = {}
+          Thing.create(attrs).should == {'uri' => 'foo'}
+        end
+
+        it "original attributes merged with returned attributes" do
+          RestClient.stub(:post => '{"uri": "foo"}')
+          attrs = {'name' => 'Foo'}
+          Thing.create(attrs).should == {'name' => 'Foo', 'uri' => 'foo'}
+        end
       end
 
       it "sets errors on the Model instance" do
@@ -154,10 +168,25 @@ describe Placid::Model do
     end
 
     describe "#update" do
-      it "returns a Model instance" do
-        RestClient.stub(:put => '{}')
-        attrs = {'name' => 'Foo'}
-        Thing.update(1, attrs).should == attrs
+      context "attributes include" do
+        it "posted attributes if no attributes were returned" do
+          RestClient.stub(:put => '{}')
+          attrs = {'name' => 'Foo'}
+          result = Thing.update(1, attrs)
+          Thing.update(1, attrs).should == {'name' => 'Foo'}
+        end
+
+        it "returned attributes if no attributes were posted" do
+          RestClient.stub(:put => '{"uri": "foo"}')
+          attrs = {}
+          Thing.update(1, attrs).should == {'uri' => 'foo'}
+        end
+
+        it "original attributes merged with returned attributes" do
+          RestClient.stub(:put => '{"uri": "foo"}')
+          attrs = {'name' => 'Foo'}
+          Thing.update(1, attrs).should == {'name' => 'Foo', 'uri' => 'foo'}
+        end
       end
 
       it "sets errors on the Model instance" do
