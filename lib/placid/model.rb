@@ -13,13 +13,19 @@ module Placid
     # Instance methods
     # ------------------
 
-    #def errors=(new_errors)
-      #@errors = new_errors
-    #end
+    # Set the list of errors on this instance.
+    #
+    def errors=(new_errors)
+      self['errors'] = new_errors
+    end
 
-    #def errors
-      #@errors ||= {}
-    #end
+    # Return the list of errors on this instance. If the 'errors' attribute is
+    # either not set, or set to nil, then return an empty list.
+    #
+    def errors
+      return self['errors'] if self['errors']
+      return []
+    end
 
     # Return true if there are any errors with this model.
     #

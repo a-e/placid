@@ -106,6 +106,63 @@ describe Placid::Model do
         thing.required?(:id).should == false
       end
     end
+
+    describe "#errors=" do
+      it "sets the list of errors on the instance" do
+        thing = Thing.new
+        thing.errors = ['missing id']
+        thing['errors'].should == ['missing id']
+      end
+    end
+
+    describe "#errors" do
+      it "returns errors set on initialization" do
+        thing = Thing.new(:errors => ['missing id'])
+        thing.errors = ['missing id']
+        thing.errors.should == ['missing id']
+      end
+
+      it "returns errors set after initialization" do
+        thing = Thing.new
+        thing.errors = ['missing id']
+        thing.errors.should == ['missing id']
+      end
+
+      it "returns [] if errors are not set" do
+        thing = Thing.new
+        thing.errors.should == []
+      end
+
+      it "returns [] if errors is set to nil" do
+        thing = Thing.new
+        thing.errors = nil
+        thing.errors.should == []
+      end
+    end
+
+    describe "#errors?" do
+      it "returns true if errors is set to a nonempty value" do
+        thing = Thing.new(:errors => ['missing id'])
+        thing.errors?.should be_true
+      end
+
+      it "returns false if errors it not set" do
+        thing = Thing.new
+        thing.errors?.should be_false
+      end
+
+      it "returns false if errors is set to nil" do
+        thing = Thing.new
+        thing.errors = nil
+        thing.errors?.should be_false
+      end
+
+      it "returns false if errors is set to an empty list" do
+        thing = Thing.new
+        thing.errors = []
+        thing.errors?.should be_false
+      end
+    end
   end
 
   context "Class methods" do
