@@ -200,11 +200,45 @@ describe Placid::Model do
 
     describe "#meta" do
       it "returns a Mash of model meta-data" do
-        data = {
+        thing_meta = {
           'name' => {'type' => 'String', 'required' => true}
         }
-        RestClient.stub(:get => JSON(data))
-        Thing.meta.should == data
+        RestClient.should_receive(:get).
+          with('http://localhost/thing/meta', {:params => {}}).
+          and_return(JSON(thing_meta))
+        Thing.meta.should == thing_meta
+      end
+
+      it "only sends a GET meta request once for the class" do
+        thing_meta = {
+          'name' => {'type' => 'String', 'required' => true}
+        }
+        RestClient.stub(:get => JSON(thing_meta))
+        RestClient.should_receive(:get).at_most(:once)
+        Thing.meta.should == thing_meta
+        Thing.meta.should == thing_meta
+        Thing.meta.should == thing_meta
+      end
+
+      it "stores meta-data separately for each derived class" do
+        class ThingOne < Placid::Model; end
+        class ThingTwo < Placid::Model; end
+
+        thing_one_meta = {
+          'one' => {'type' => 'String', 'required' => true}
+        }
+        RestClient.should_receive(:get).
+          with('http://localhost/thing_one/meta', {:params => {}}).
+          and_return(JSON(thing_one_meta))
+        ThingOne.meta.should == thing_one_meta
+
+        thing_two_meta = {
+          'two' => {'type' => 'String', 'required' => false}
+        }
+        RestClient.should_receive(:get).
+          with('http://localhost/thing_two/meta', {:params => {}}).
+          and_return(JSON(thing_two_meta))
+        ThingTwo.meta.should == thing_two_meta
       end
     end
 

@@ -70,6 +70,7 @@ module Placid
     # ------------------
 
     @unique_id = nil
+    @meta = nil
 
     # Return the `snake_case` name of this model, based on the derived class
     # name. This name should match the REST API path component used to interact
@@ -91,9 +92,8 @@ module Placid
 
     # Return a Hashie::Mash of meta-data for this model.
     #
-    # FIXME: Avoid calling this more often than needed
     def self.meta
-      get_mash(model, 'meta')
+      @meta ||= get_mash(model, 'meta')
     end
 
     # Return a Hashie::Mash with a list of all model instances.
