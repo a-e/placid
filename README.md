@@ -40,6 +40,24 @@ different field name, you can specify it like this:
       unique_id :email
     end
 
+The `Placid::Model` base class includes helper methods for basic HTTP requests.
+You can use these from any model instance, or call them from custom methods you
+define on your model. For example:
+
+    class Person < Placid::Model
+      unique_id :email
+
+      def add_phone(phone_number)
+        put(model, id, 'add_phone', phone_number)
+      end
+    end
+
+    jenny = Person.new(:email => 'jenny@example.com')
+
+    jenny.add_phone('867-5309')
+    # Same as:
+    jenny.put('person', 'jenny@example.com', 'add_phone', '867-5309')
+
 
 License
 -------
