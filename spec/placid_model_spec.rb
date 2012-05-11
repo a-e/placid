@@ -163,6 +163,15 @@ describe Placid::Model do
         thing.errors?.should be_false
       end
     end
+
+    describe "helpers" do
+      it "can call #get on an instance" do
+        thing = Thing.new
+        RestClient.should_receive(:get).
+          with('http://localhost/thing/foo', {:params => {:x => 'y'}})
+        thing.get('thing', 'foo', :x => 'y')
+      end
+    end
   end
 
   context "Class methods" do
