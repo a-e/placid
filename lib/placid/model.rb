@@ -1,6 +1,6 @@
 require 'hashie'
 require 'placid/helper'
-require 'active_support/inflector' # for `pluralize`
+require 'active_support/inflector' # for `pluralize` and `underscore`
 
 module Placid
   # Base class for RESTful models
@@ -77,7 +77,7 @@ module Placid
     # with the corresponding model.
     #
     def self.model
-      return to_snake_case(self.name)
+      return self.name.underscore
     end
 
     # Get or set the field name used for uniquely identifying instances of this

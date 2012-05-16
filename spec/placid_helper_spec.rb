@@ -7,20 +7,6 @@ describe Placid::Helper do
     end
   end
 
-  describe "#to_snake_case" do
-    it "starts new words for each capitalized word" do
-      to_snake_case('Foo').should == 'foo'
-      to_snake_case('FooBar').should == 'foo_bar'
-      to_snake_case('FooBarBaz').should == 'foo_bar_baz'
-    end
-
-    it "treats consecutive capitals as a single word" do
-      to_snake_case('FOO').should == 'foo'
-      to_snake_case('FOOBar').should == 'foo_bar'
-      to_snake_case('FOOBarBAZ').should == 'foo_bar_baz'
-    end
-  end
-
   describe "#url" do
     it "joins path components with '/'" do
       url('foo', 'bar', 'baz').should == 'http://localhost/foo/bar/baz'
