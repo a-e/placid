@@ -77,7 +77,7 @@ module Placid
     # with the corresponding model.
     #
     def self.model
-      self.name.gsub(/(.)([A-Z])/, '\1_\2').downcase
+      return to_snake_case(self.name)
     end
 
     # Get or set the field name used for uniquely identifying instances of this

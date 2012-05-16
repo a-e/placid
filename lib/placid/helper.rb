@@ -15,6 +15,16 @@ module Placid
       URI.escape(text.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
     end
 
+    # Convert a string from `CamelCase` to `snake_case`.
+    #
+    def to_snake_case(text)
+      return text.gsub(/::/, '/').
+      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+      gsub(/([a-z\d])([A-Z])/,'\1_\2').
+      tr("-", "_").
+      downcase
+    end
+
     # If the last arg in `args` is a hash, pop it off and return it. Otherwise,
     # return an empty hash. `args` is modified in-place. Behaves like
     # ActiveSupport's `String#extract_options!` method.
