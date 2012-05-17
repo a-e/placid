@@ -143,7 +143,6 @@ module Placid
       obj = self.new(attrs)
       json = put(model, id, attrs)
       obj.merge!(json)
-      #obj.errors = json['errors']
       return obj
     end
 
