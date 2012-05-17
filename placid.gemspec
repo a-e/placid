@@ -20,8 +20,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rcov'
 
   s.files = `git ls-files`.split("\n")
-  # Don't include .jar files in distribution
-  s.files.reject! { |f| f =~ /.jar$/ }
 
   s.require_path = 'lib'
 end
