@@ -99,7 +99,9 @@ module Placid
     # Return a Hashie::Mash with a list of all model instances.
     #
     def self.list
-      get_mashes(model.pluralize)
+      return get_mashes(model.pluralize).map do |mash|
+        self.new(mash)
+      end
     end
 
     # Return a Model instance matching the given id

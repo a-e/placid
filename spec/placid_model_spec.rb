@@ -243,13 +243,17 @@ describe Placid::Model do
     end
 
     describe "#list" do
-      it "returns a Mash list of all model instances" do
+      it "returns a list of model instances" do
         data = [
           {'name' => 'Foo'},
           {'name' => 'Bar'},
         ]
         RestClient.stub(:get => JSON(data))
-        Thing.list.should == data
+        things = Thing.list
+        things.should == data
+        things.each do |thing|
+          thing.should be_a(Thing)
+        end
       end
     end
 
@@ -257,7 +261,9 @@ describe Placid::Model do
       it "returns a Model instance matching the given id" do
         data = {'name' => 'Foo'}
         RestClient.stub(:get => JSON(data))
-        Thing.find(1).should == data
+        thing = Thing.find(1)
+        thing.should be_a(Thing)
+        thing.should == data
       end
     end
 
@@ -266,26 +272,34 @@ describe Placid::Model do
         it "posted attributes if no attributes were returned" do
           RestClient.stub(:post => '{}')
           attrs = {'name' => 'Foo'}
-          Thing.create(attrs).should == {'name' => 'Foo'}
+          thing = Thing.create(attrs)
+          thing.should be_a(Thing)
+          thing.should == {'name' => 'Foo'}
         end
 
         it "returned attributes if no attributes were posted" do
           RestClient.stub(:post => '{"uri": "foo"}')
           attrs = {}
-          Thing.create(attrs).should == {'uri' => 'foo'}
+          thing = Thing.create(attrs)
+          thing.should be_a(Thing)
+          thing.should == {'uri' => 'foo'}
         end
 
         it "original attributes merged with returned attributes" do
           RestClient.stub(:post => '{"uri": "foo"}')
           attrs = {'name' => 'Foo'}
-          Thing.create(attrs).should == {'name' => 'Foo', 'uri' => 'foo'}
+          thing = Thing.create(attrs)
+          thing.should be_a(Thing)
+          thing.should == {'name' => 'Foo', 'uri' => 'foo'}
         end
       end
 
       it "sets errors on the Model instance" do
         data = {'errors' => ['name is required']}
         RestClient.stub(:post => JSON(data))
-        Thing.create().errors.should == ['name is required']
+        thing = Thing.create()
+        thing.should be_a(Thing)
+        thing.errors.should == ['name is required']
       end
     end
 
@@ -295,26 +309,34 @@ describe Placid::Model do
           RestClient.stub(:put => '{}')
           attrs = {'name' => 'Foo'}
           result = Thing.update(1, attrs)
-          Thing.update(1, attrs).should == {'name' => 'Foo'}
+          thing = Thing.update(1, attrs)
+          thing.should be_a(Thing)
+          thing.should == {'name' => 'Foo'}
         end
 
         it "returned attributes if no attributes were posted" do
           RestClient.stub(:put => '{"uri": "foo"}')
           attrs = {}
-          Thing.update(1, attrs).should == {'uri' => 'foo'}
+          thing = Thing.update(1, attrs)
+          thing.should be_a(Thing)
+          thing.should == {'uri' => 'foo'}
         end
 
         it "original attributes merged with returned attributes" do
           RestClient.stub(:put => '{"uri": "foo"}')
           attrs = {'name' => 'Foo'}
-          Thing.update(1, attrs).should == {'name' => 'Foo', 'uri' => 'foo'}
+          thing = Thing.update(1, attrs)
+          thing.should be_a(Thing)
+          thing.should == {'name' => 'Foo', 'uri' => 'foo'}
         end
       end
 
       it "sets errors on the Model instance" do
         data = {'errors' => ['name is required']}
         RestClient.stub(:put => JSON(data))
-        Thing.update(1, {}).errors.should == ['name is required']
+        thing = Thing.update(1, {})
+        thing.should be_a(Thing)
+        thing.errors.should == ['name is required']
       end
     end
 
