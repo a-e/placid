@@ -33,6 +33,13 @@ describe Placid::Helper do
       json.should == ["fail"]
     end
 
+    it "returns a RestConnectionError when connection is refused" do
+      RestClient.stub(:get).and_raise(Errno::ECONNREFUSED)
+      lambda do
+        json = request('get')
+      end.should raise_error(Placid::RestConnectionError, /Could not connect/)
+    end
+
     it "passes other exceptions through" do
       RestClient.stub(:get).and_raise(URI::InvalidURIError)
       lambda do

@@ -68,11 +68,14 @@ module Placid
       method = method.to_sym
       params = extract_options(path)
       params = {:params => params} if method == :get
-      base_url = Placid::Config.rest_url
+      rest_url = url(*path)
       begin
-        response = RestClient.send(method, url(*path), params)
+        response = RestClient.send(method, rest_url, params)
       rescue RestClient::Exception => e
         response = e.response
+      rescue Errno::ECONNREFUSED => e
+        raise RestConnectionError,
+          "Could not connect to REST API: #{rest_url} (#{e.message})"
       rescue => e
         raise
       end
