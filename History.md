@@ -5,6 +5,7 @@ Placid History
 -----
 
 - Raise RestConnectionError when REST connection is refused
+- Use ActiveSupport's Array#extract_options! method
 
 
 0.0.2

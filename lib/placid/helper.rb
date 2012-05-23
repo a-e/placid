@@ -2,6 +2,7 @@ require 'uri'
 require 'json'
 require 'hashie'
 require 'rest-client'
+require 'active_support/core_ext/array' # for extract_options!
 require 'placid/exceptions'
 
 module Placid
@@ -13,19 +14,6 @@ module Placid
     #
     def escape(text)
       URI.escape(text.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
-    end
-
-    # If the last arg in `args` is a hash, pop it off and return it. Otherwise,
-    # return an empty hash. `args` is modified in-place. Behaves like
-    # ActiveSupport's `String#extract_options!` method.
-    #
-    # @param [Array] args
-    #   Zero or more arguments, the last of which might be a Hash.
-    #
-    # @return [Hash]
-    #
-    def extract_options(args)
-      args.last.is_a?(::Hash) ? args.pop : {}
     end
 
     # Return a full URL for a REST API request to the given path, relative to
@@ -66,7 +54,7 @@ module Placid
     #
     def request(method, *path)
       method = method.to_sym
-      params = extract_options(path)
+      params = path.extract_options!
       params = {:params => params} if method == :get
       rest_url = url(*path)
       begin
