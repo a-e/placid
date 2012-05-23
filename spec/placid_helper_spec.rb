@@ -69,6 +69,38 @@ describe Placid::Helper do
     end
   end
 
+  describe "#get" do
+    it "sends a GET request to the given path" do
+      RestClient.should_receive(:get).
+        with('http://localhost/foo/bar', {:params => {:baz => 'hi'}})
+      get('foo', 'bar', :baz => 'hi')
+    end
+  end
+
+  describe "#post" do
+    it "sends a POST request to the given path" do
+      RestClient.should_receive(:post).
+        with('http://localhost/foo/bar', {:baz => 'hi'})
+      post('foo', 'bar', :baz => 'hi')
+    end
+  end
+
+  describe "#put" do
+    it "sends a PUT request to the given path" do
+      RestClient.should_receive(:put).
+        with('http://localhost/foo/bar', {:baz => 'hi'})
+      put('foo', 'bar', :baz => 'hi')
+    end
+  end
+
+  describe "#delete" do
+    it "sends a DELETE request to the given path" do
+      RestClient.should_receive(:delete).
+        with('http://localhost/foo/bar', {:baz => 'hi'})
+      delete('foo', 'bar', :baz => 'hi')
+    end
+  end
+
   describe "#get_mash" do
     it "returns a Hashie::Mash for hash data" do
       data = {
