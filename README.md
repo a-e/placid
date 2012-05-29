@@ -59,6 +59,55 @@ define on your model. For example:
     jenny.put('person', 'jenny@example.com', 'add_phone', '867-5309')
 
 
+Model names
+-----------
+
+By default, Placid assumes that your REST pathnames use the `snake_case`
+version of your model's name. That is, if you have these models:
+
+    class Person < Placid::Model
+    end
+
+    class HomeAddress < Placid::Model
+    end
+
+then Placid will use these REST paths:
+
+    /person
+    /home_address
+
+To override this behavior for a single model, simply define the `model` class
+method. For instance, if the REST path for `HomeAddress` should be `addr`, do:
+
+    class HomeAddress < Placid::Model
+      def self.model
+        'addr'
+      end
+    end
+
+If you want to override this behavior for all models in your app, create a
+shared base class derived from `Placid::Model`, and override the `model` class
+method there. For example, if your REST paths use the exact `CamelCase` model
+name, you could do:
+
+    class Model < Placid::Model
+      def self.model
+        self.name
+      end
+    end
+
+    class Person < Model
+    end
+
+    class HomeAddress < Model
+    end
+
+This configuration will use REST paths like:
+
+    /Person
+    /HomeAddress
+
+
 License
 -------
 
