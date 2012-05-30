@@ -5,7 +5,7 @@ Placid is an ActiveRecord-ish model using a REST API for storage. The REST API
 can be any backend you choose or create yourself, provided it follows some basic
 conventions.
 
-[Documentation is on rdoc.info.](http://rdoc.info/github/a-e/placid/master/frames).
+[Documentation is on rdoc.info.](http://rdoc.info/github/a-e/placid/master/frames)
 
 
 Installation
