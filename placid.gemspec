@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "placid"
-  s.version = "0.0.3"
+  s.version = "0.0.4"
   s.summary = "Models from REST"
   s.description = <<-EOS
   EOS

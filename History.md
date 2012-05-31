@@ -1,6 +1,13 @@
 Placid History
 ==============
 
+0.0.4
+-----
+
+- Remove get/post/put/delete convenience methods
+- Side effect: avoid Hashie::Mash doing unwanted `delete` calls
+
+
 0.0.3
 -----
 
