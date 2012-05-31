@@ -112,7 +112,7 @@ module Placid
     # @return [Model]
     #
     def self.find(id)
-      json = get(model, id)
+      json = request(:get, model, id)
       return self.new(json)
     end
 
@@ -125,7 +125,7 @@ module Placid
     #
     def self.create(attrs={})
       obj = self.new(attrs)
-      json = post(model, attrs)
+      json = request(:post, model, attrs)
       obj.merge!(json)
       return obj
     end
@@ -141,7 +141,7 @@ module Placid
     #
     def self.update(id, attrs={})
       obj = self.new(attrs)
-      json = put(model, id, attrs)
+      json = request(:put, model, id, attrs)
       obj.merge!(json)
       return obj
     end
@@ -152,7 +152,7 @@ module Placid
     #   Identifier for the model instance to delete
     #
     def self.destroy(id)
-      delete(model, id)
+      request(:delete, model, id)
     end
 
   end

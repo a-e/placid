@@ -51,7 +51,7 @@ define on your model. For example:
       unique_id :email
 
       def add_phone(phone_number)
-        put(model, id, 'add_phone', phone_number)
+        request(:put, model, id, 'add_phone', phone_number)
       end
     end
 
@@ -59,7 +59,7 @@ define on your model. For example:
 
     jenny.add_phone('867-5309')
     # Same as:
-    jenny.put('person', 'jenny@example.com', 'add_phone', '867-5309')
+    jenny.request(:put, 'person', 'jenny@example.com', 'add_phone', '867-5309')
 
 
 Model names

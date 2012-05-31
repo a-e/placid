@@ -18,6 +18,18 @@ describe Placid::Helper do
   end
 
   describe "#request" do
+    it "accepts a string for method" do
+      RestClient.stub(:get => '["success"]')
+      json = request('get')
+      json.should == ["success"]
+    end
+
+    it "accepts a symbol for method" do
+      RestClient.stub(:get => '["success"]')
+      json = request(:get)
+      json.should == ["success"]
+    end
+
     it "returns a legitimate response as JSON" do
       RestClient.stub(:get => '["success"]')
       json = request('get')
@@ -66,38 +78,6 @@ describe Placid::Helper do
     it "sends :params => params for get requests" do
       RestClient.should_receive(:get).with('http://localhost/foo', {:params => {:x => 'y'}})
       json = request('get', 'foo', :x => 'y')
-    end
-  end
-
-  describe "#get" do
-    it "sends a GET request to the given path" do
-      RestClient.should_receive(:get).
-        with('http://localhost/foo/bar', {:params => {:baz => 'hi'}})
-      get('foo', 'bar', :baz => 'hi')
-    end
-  end
-
-  describe "#post" do
-    it "sends a POST request to the given path" do
-      RestClient.should_receive(:post).
-        with('http://localhost/foo/bar', {:baz => 'hi'})
-      post('foo', 'bar', :baz => 'hi')
-    end
-  end
-
-  describe "#put" do
-    it "sends a PUT request to the given path" do
-      RestClient.should_receive(:put).
-        with('http://localhost/foo/bar', {:baz => 'hi'})
-      put('foo', 'bar', :baz => 'hi')
-    end
-  end
-
-  describe "#delete" do
-    it "sends a DELETE request to the given path" do
-      RestClient.should_receive(:delete).
-        with('http://localhost/foo/bar', {:baz => 'hi'})
-      delete('foo', 'bar', :baz => 'hi')
     end
   end
 

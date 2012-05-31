@@ -68,21 +68,21 @@ describe Placid::Model do
       it "returns false if errors were reported" do
         thing = Thing.new
         Thing.stub(:find => nil)
-        Thing.stub(:post => {'errors' => 'Missing id'})
+        Thing.stub(:request).with(:post, 'thing', {}) { {'errors' => 'Missing id'} }
         thing.save.should be_false
       end
 
       it "returns true if errors is an empty list" do
         thing = Thing.new(:id => '123')
         Thing.stub(:find => nil)
-        Thing.stub(:post => {'errors' => []})
+        Thing.stub(:request).with(:post, 'thing', {'id' => '123'}) { {'errors' => []} }
         thing.save.should be_true
       end
 
       it "returns true if no errors were reported" do
         thing = Thing.new(:id => '123')
         Thing.stub(:find => nil)
-        Thing.stub(:post => {})
+        Thing.stub(:request).with(:post, 'thing', {'id' => '123'}) { {} }
         thing.save.should be_true
       end
     end
@@ -165,11 +165,11 @@ describe Placid::Model do
     end
 
     describe "helpers" do
-      it "can call #get on an instance" do
+      it "can call #request on an instance" do
         thing = Thing.new
         RestClient.should_receive(:get).
           with('http://localhost/thing/foo', {:params => {:x => 'y'}})
-        thing.get('thing', 'foo', :x => 'y')
+        thing.request(:get, 'thing', 'foo', :x => 'y')
       end
     end
   end

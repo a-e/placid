@@ -43,7 +43,8 @@ module Placid
     #
     # @overload request(method, *path, params={})
     #   @param [String, Symbol] method
-    #     Request method to use ('get', 'post', 'put', 'delete', etc.)
+    #     Request method to use, as a string ('get', 'post', 'put', 'delete')
+    #     or symbol (:get, :post, :put, :delete)
     #   @param [Array] path
     #     Path components for the request
     #   @param [Hash] params
@@ -70,68 +71,6 @@ module Placid
       return JSON.parse(response) rescue {}
     end
 
-    # Send a GET request and return the parsed JSON response.
-    #
-    # @example
-    #   get('people', 'eric')
-    #   get('people', {:name => 'eric'})
-    #
-    # @overload get(*path, params={})
-    #   See {#request} for allowed parameters.
-    #
-    # @return [Hash]
-    #   Parsed response, or an empty hash if parsing failed
-    #
-    def get(*path)
-      request('get', *path)
-    end
-
-    # Send a POST request and return the parsed JSON response.
-    #
-    # @example
-    #   post('people', 'new', {:name => 'eric'})
-    #
-    # @overload post(*path, params={})
-    #   See {#request} for allowed parameters.
-    #
-    # @return [Hash]
-    #   Parsed response, or an empty hash if parsing failed
-    #
-    def post(*path)
-      request('post', *path)
-    end
-
-    # Send a PUT request and return the parsed JSON response.
-    #
-    # @example
-    #   put('people', 'eric', {:title => 'Developer'})
-    #
-    # @overload put(*path, params={})
-    #   See {#request} for allowed parameters.
-    #
-    # @return [Hash]
-    #   Parsed response, or an empty hash if parsing failed
-    #
-    def put(*path)
-      request('put', *path)
-    end
-
-    # Send a DELETE request and return the parsed JSON response.
-    #
-    # @example
-    #   delete('people', 'eric')
-    #   delete('people', {:name => 'eric'})
-    #
-    # @overload delete(*path, params={})
-    #   See {#request} for allowed parameters.
-    #
-    # @return [Hash]
-    #   Parsed response, or an empty hash if parsing failed
-    #
-    def delete(*path)
-      request('delete', *path)
-    end
-
     # Send a GET to a path that returns a single JSON object, and return the
     # result as a Hashie::Mash.
     #
@@ -141,7 +80,7 @@ module Placid
     # @return [Hashie::Mash]
     #
     def get_mash(*path)
-      json = get(*path)
+      json = request(:get, *path)
       begin
         return Hashie::Mash.new(json)
       rescue => e
@@ -159,7 +98,7 @@ module Placid
     # @return [Array]
     #
     def get_mashes(*path)
-      json = get(*path)
+      json = request(:get, *path)
       begin
         return json.map {|rec| Hashie::Mash.new(rec)}
       rescue => e
