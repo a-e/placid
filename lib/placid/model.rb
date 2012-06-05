@@ -96,7 +96,7 @@ module Placid
       @meta ||= get_mash(model, 'meta')
     end
 
-    # Return a Hashie::Mash with a list of all model instances.
+    # Return an array of Hashie::Mashes for all model instances.
     #
     def self.list
       return get_mashes(model.pluralize).map do |mash|

@@ -89,8 +89,31 @@ describe Placid::Helper do
       }
       RestClient.stub(:get => JSON(data))
       mash = get_mash
+      mash.should be_a(Hashie::Mash)
       mash.first_name.should == 'Nathan'
       mash.last_name.should == 'Stark'
+    end
+
+    it "returns nested Hashie::Mashes for nested hash data" do
+      data = {
+        'person' => {
+          'first_name' => 'Jack',
+          'last_name' => 'Carter',
+        },
+        'address' => {
+          'street' => '123 Main Street',
+          'city' => 'Eureka',
+        },
+      }
+      RestClient.stub(:get => JSON(data))
+      mash = get_mash
+      mash.should be_a(Hashie::Mash)
+      mash.person.should be_a(Hashie::Mash)
+      mash.person.first_name.should == 'Jack'
+      mash.person.last_name.should == 'Carter'
+      mash.address.should be_a(Hashie::Mash)
+      mash.address.street.should == '123 Main Street'
+      mash.address.city.should == 'Eureka'
     end
 
     it "raises an exception when the JSON cannot be parsed" do
