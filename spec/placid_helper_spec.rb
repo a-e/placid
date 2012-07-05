@@ -59,24 +59,31 @@ describe Placid::Helper do
       end.should raise_error(URI::InvalidURIError)
     end
 
-    it "returns an empty hash if there is no response" do
+    it "raises a JSONParseError if there is no response" do
       RestClient.stub(:get) { nil }
-      json = request('get')
-      json.should == {}
+      lambda do
+        json = request('get')
+      end.should raise_error(Placid::JSONParseError, /Cannot parse/)
     end
 
     it "accepts a params hash as the last argument" do
-      RestClient.should_receive(:post).with('http://localhost/foo', {:bar => 'hi'})
+      RestClient.should_receive(:post).
+        with('http://localhost/foo', {:bar => 'hi'}).
+        and_return('{}')
       json = request('post', 'foo', :bar => 'hi')
     end
 
     it "sends an empty params hash if none is given" do
-      RestClient.should_receive(:post).with('http://localhost/foo', {})
+      RestClient.should_receive(:post).
+        with('http://localhost/foo', {}).
+        and_return('{}')
       json = request('post', 'foo')
     end
 
     it "sends :params => params for get requests" do
-      RestClient.should_receive(:get).with('http://localhost/foo', {:params => {:x => 'y'}})
+      RestClient.should_receive(:get).
+        with('http://localhost/foo', {:params => {:x => 'y'}}).
+        and_return('{}')
       json = request('get', 'foo', :x => 'y')
     end
   end

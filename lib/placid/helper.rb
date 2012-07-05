@@ -51,7 +51,12 @@ module Placid
     #     Optional parameters to send in the request.
     #
     # @return [Hash]
-    #   Parsed response, or an empty hash if parsing failed
+    #   Parsed response
+    #
+    # @raise [RestConnectionError]
+    #   If there is a problem connecting to the REST API
+    # @raise [JSONParseError]
+    #   If the response from the REST API cannot be parsed as JSON
     #
     def request(method, *path)
       method = method.to_sym
@@ -68,7 +73,13 @@ module Placid
       rescue => e
         raise
       end
-      return JSON.parse(response) rescue {}
+      # Try to parse the response
+      begin
+        return JSON.parse(response)
+      rescue => e
+        raise JSONParseError.new(
+          "Cannot parse response from #{rest_url} as JSON", response)
+      end
     end
 
     # Send a GET to a path that returns a single JSON object, and return the

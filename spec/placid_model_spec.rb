@@ -168,7 +168,8 @@ describe Placid::Model do
       it "can call #request on an instance" do
         thing = Thing.new
         RestClient.should_receive(:get).
-          with('http://localhost/thing/foo', {:params => {:x => 'y'}})
+          with('http://localhost/thing/foo', {:params => {:x => 'y'}}).
+          and_return('{}')
         thing.request(:get, 'thing', 'foo', :x => 'y')
       end
     end

@@ -1,6 +1,13 @@
 Placid History
 ==============
 
+0.0.5
+-----
+
+- Raise JSONParseError on bad responses instead of returning {}
+- Add `data` attribute to JSONParseError to see what failed to parse
+
+
 0.0.4
 -----
 
