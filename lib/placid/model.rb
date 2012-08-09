@@ -82,6 +82,7 @@ module Placid
 
     # Get or set the field name used for uniquely identifying instances of this
     # model.
+    #
     def self.unique_id(field=nil)
       if field.nil?
         return @unique_id || :id
@@ -104,7 +105,8 @@ module Placid
       end
     end
 
-    # Return a Model instance matching the given id
+    # Return a Model instance matching the given id. Sends a GET request to the
+    # REST API.
     #
     # @param [String] id
     #   Identifier for the model instance to fetch
@@ -116,7 +118,8 @@ module Placid
       return self.new(json)
     end
 
-    # Create a new model instance and return it.
+    # Create a new model instance and return it. Sends a POST request
+    # to the REST API.
     #
     # @param [Hash] attrs
     #   Attribute values for the new instance
@@ -130,7 +133,7 @@ module Placid
       return obj
     end
 
-    # Update an existing model instance.
+    # Update an existing model instance. Sends a PUT request to the REST API.
     #
     # @param [String] id
     #   Identifier of the model instance to update
@@ -146,7 +149,7 @@ module Placid
       return obj
     end
 
-    # Destroy a model instance.
+    # Destroy a model instance. Sends a DELETE request to the REST API.
     #
     # @param [String] id
     #   Identifier for the model instance to delete

@@ -21,7 +21,7 @@ Define a subclass with the name of your REST model:
     class Person < Placid::Model
     end
 
-and you'll get these class methods, and their REST equivalents:
+and you'll get these class methods, and their REST equivalents, automatically:
 
     Person.list              # GET     /people
     Person.create(attrs)     # POST    /person      (attrs)
@@ -43,9 +43,10 @@ different field name, you can specify it like this:
       unique_id :email
     end
 
-The `Placid::Model` base class includes helper methods for basic HTTP requests.
-You can use these from any model instance, or call them from custom methods you
-define on your model. For example:
+The `Placid::Model` base class includes helper methods for basic HTTP requests,
+the most important of which is `request`. You can use these from any model
+instance, or call them from custom methods you define on your model. For
+example:
 
     class Person < Placid::Model
       unique_id :email
@@ -57,8 +58,12 @@ define on your model. For example:
 
     jenny = Person.new(:email => 'jenny@example.com')
 
+Now, calling this:
+
     jenny.add_phone('867-5309')
-    # Same as:
+
+Is the same as:
+
     jenny.request(:put, 'person', 'jenny@example.com', 'add_phone', '867-5309')
 
 
@@ -116,7 +121,8 @@ License
 
 The MIT License
 
-Copyright (c) 2012 Society for Human Resource Management
+Copyright (c) 2012 Eric Pierce, Automation Excellence, Society for Human
+Resource Management
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
