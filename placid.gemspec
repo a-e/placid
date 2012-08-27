@@ -3,6 +3,9 @@ Gem::Specification.new do |s|
   s.version = "0.0.6"
   s.summary = "Models from REST"
   s.description = <<-EOS
+    Placid is an ActiveRecord-ish model using a REST API for storage. The REST API
+    can be any backend you choose or create yourself, provided it follows some basic
+    conventions.
   EOS
   s.authors = ["Eric Pierce"]
   s.email = "epierce@automation-excellence.com"
