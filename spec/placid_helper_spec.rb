@@ -7,13 +7,13 @@ describe Placid::Helper do
     end
   end
 
-  describe "#url" do
+  describe "#get_url" do
     it "joins path components with '/'" do
-      url('foo', 'bar', 'baz').should == 'http://localhost/foo/bar/baz'
+      get_url('foo', 'bar', 'baz').should == 'http://localhost/foo/bar/baz'
     end
 
     it "escapes path components to make them URI-safe" do
-      url('a b', 'c:d', 'e/f').should == 'http://localhost/a%20b/c%3Ad/e%2Ff'
+      get_url('a b', 'c:d', 'e/f').should == 'http://localhost/a%20b/c%3Ad/e%2Ff'
     end
   end
 

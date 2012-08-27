@@ -21,15 +21,15 @@ module Placid
     # URI-escaped.
     #
     # @example
-    #   url('people', 'eric') #=> 'http://localhost/people/eric'
-    #   url('a b', 'c:d')     #=> 'http://localhost/a%20b/c%3Ad'
+    #   get_url('people', 'eric') #=> 'http://localhost/people/eric'
+    #   get_url('a b', 'c:d')     #=> 'http://localhost/a%20b/c%3Ad'
     #
     # @param [Array] path
     #   Parts of the path to request. These will be escaped and joined with '/'.
     #
     # @return [String]
     #
-    def url(*path)
+    def get_url(*path)
       url = Placid::Config.rest_url.to_s.gsub(/\/$/, '')
       joined_path = path.map { |p| escape(p) }.join('/')
       return "#{url}/#{joined_path}"
@@ -62,7 +62,7 @@ module Placid
       method = method.to_sym
       params = path.extract_options!
       params = {:params => params} if method == :get
-      rest_url = url(*path)
+      rest_url = get_url(*path)
       begin
         response = RestClient.send(method, rest_url, params)
       rescue RestClient::Exception => e
