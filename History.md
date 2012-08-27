@@ -1,6 +1,12 @@
 Placid History
 ==============
 
+0.0.6
+-----
+
+- Rename #url to #get_url to avoid conflicts with `url` fields
+
+
 0.0.5
 -----
 
