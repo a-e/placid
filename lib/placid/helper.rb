@@ -57,8 +57,13 @@ module Placid
     #   If there is a problem connecting to the REST API
     # @raise [JSONParseError]
     #   If the response from the REST API cannot be parsed as JSON
+    # @raise [PathError]
+    #   If any part of the path is nil
     #
     def request(method, *path)
+      if path.any? {|p| p.nil?}
+        raise PathError, "Cannot use nil as a path component"
+      end
       method = method.to_sym
       params = path.extract_options!
       params = {:params => params} if method == :get

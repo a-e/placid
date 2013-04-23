@@ -45,18 +45,17 @@ describe Placid::Helper do
       json.should == ["fail"]
     end
 
-    it "returns a RestConnectionError when connection is refused" do
+    it "raises a PathError if there's a nil in the path array" do
+      lambda do
+        request('get', 'foo', nil, 'bar')
+      end.should raise_error(Placid::PathError, /Cannot use nil as a path component/)
+    end
+
+    it "raises a RestConnectionError when connection is refused" do
       RestClient.stub(:get).and_raise(Errno::ECONNREFUSED)
       lambda do
         json = request('get')
       end.should raise_error(Placid::RestConnectionError, /Could not connect/)
-    end
-
-    it "passes other exceptions through" do
-      RestClient.stub(:get).and_raise(URI::InvalidURIError)
-      lambda do
-        json = request('get')
-      end.should raise_error(URI::InvalidURIError)
     end
 
     it "raises a JSONParseError if there is no response" do
@@ -64,6 +63,13 @@ describe Placid::Helper do
       lambda do
         json = request('get')
       end.should raise_error(Placid::JSONParseError, /Cannot parse/)
+    end
+
+    it "passes other exceptions through" do
+      RestClient.stub(:get).and_raise(URI::InvalidURIError)
+      lambda do
+        json = request('get')
+      end.should raise_error(URI::InvalidURIError)
     end
 
     it "accepts a params hash as the last argument" do

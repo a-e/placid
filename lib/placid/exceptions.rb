@@ -1,6 +1,10 @@
 module Placid
+  # Generic Placid exception
+  class PlacidError < RuntimeError
+  end
+
   # Error parsing a JSON response
-  class JSONParseError < RuntimeError
+  class JSONParseError < PlacidError
     def initialize(message, data='')
       super(message)
       @data = data
@@ -9,6 +13,10 @@ module Placid
   end
 
   # Error connecting to the REST API
-  class RestConnectionError < RuntimeError
+  class RestConnectionError < PlacidError
+  end
+
+  # Error with request path
+  class PathError < PlacidError
   end
 end
