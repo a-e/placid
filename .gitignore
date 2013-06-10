@@ -6,3 +6,5 @@ coverage/*
 doc/*
 *~
 pkg/*
+.ruby-gemset
+.ruby-version
