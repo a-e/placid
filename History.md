@@ -1,6 +1,14 @@
 Placid History
 ==============
 
+0.0.7
+-----
+
+- Some support for coercion (requires Hashie >= 2.0.4)
+- Allow '/' in request URL paths to pass through unescaped
+- Add PlacidError base exception class
+
+
 0.0.6
 -----
 
