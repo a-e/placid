@@ -5,7 +5,7 @@ require 'active_support/inflector' # for `pluralize` and `underscore`
 module Placid
   # Base class for RESTful models
   class Model < Hashie::Mash
-
+    include Hashie::Extensions::Coercion
     include Placid::Helper
     extend Placid::Helper
 

@@ -7,13 +7,14 @@ require 'placid/exceptions'
 
 module Placid
   module Helper
-    # Escape any special URI characters in `text` and return the escaped string.
-    # `nil` is treated as an empty string.
+    # Escape any special URI characters in `text` (except for '/') and return
+    # the escaped string. `nil` is treated as an empty string.
     #
     # @return [String]
     #
     def escape(text)
-      URI.escape(text.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+      # Treat '/' as unreserved
+      URI.escape(text.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}/]"))
     end
 
     # Return a full URL for a REST API request to the given path, relative to

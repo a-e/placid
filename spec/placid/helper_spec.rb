@@ -3,7 +3,11 @@ require 'spec_helper'
 describe Placid::Helper do
   describe "#escape" do
     it "escapes all URI reserved characters" do
-      escape(";/?:@&=+$,[]").should == "%3B%2F%3F%3A%40%26%3D%2B%24%2C%5B%5D"
+      escape(";?:@&=+$,[]").should == "%3B%3F%3A%40%26%3D%2B%24%2C%5B%5D"
+    end
+
+    it "does not escape '/'" do
+      escape("foo/bar/baz").should == "foo/bar/baz"
     end
   end
 
@@ -13,7 +17,11 @@ describe Placid::Helper do
     end
 
     it "escapes path components to make them URI-safe" do
-      get_url('a b', 'c:d', 'e/f').should == 'http://localhost/a%20b/c%3Ad/e%2Ff'
+      get_url('a b', 'c:d').should == 'http://localhost/a%20b/c%3Ad'
+    end
+
+    it "does not escape '/'" do
+      get_url('a/b', 'c/d').should == 'http://localhost/a/b/c/d'
     end
   end
 

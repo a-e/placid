@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/a-e/placid"
   s.platform = Gem::Platform::RUBY
 
-  s.add_dependency 'hashie'
+  s.add_dependency 'hashie', '>= 2.0.4'
   s.add_dependency 'json'
   s.add_dependency 'rest-client'
   s.add_dependency 'activesupport'
