@@ -53,6 +53,13 @@ describe Placid::Helper do
       json.should == ["fail"]
     end
 
+    it "preserves '/' in path components" do
+      RestClient.should_receive(:post).
+        with('http://localhost/foo/bar/baz', {:x => '5'}).
+        and_return('{}')
+      request('post', 'foo/bar', 'baz', :x => '5')
+    end
+
     it "raises a PathError if there's a nil in the path array" do
       lambda do
         request('get', 'foo', nil, 'bar')

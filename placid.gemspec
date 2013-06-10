@@ -20,7 +20,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard' # For documentation
   s.add_development_dependency 'redcarpet' # For YARD / Markdown
-  s.add_development_dependency 'rcov'
+
+  if RUBY_VERSION < "1.9"
+    s.add_development_dependency 'rcov'
+  else
+    s.add_development_dependency 'simplecov'
+  end
 
   s.files = `git ls-files`.split("\n")
 
